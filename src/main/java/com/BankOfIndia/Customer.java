@@ -1,16 +1,23 @@
 package com.BankOfIndia;
+import java.io.IOException;
 import java.sql.*;
+
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
 import com.BankOfIndia.DBConnection.DBConnectionSingleton;
 import com.BankOfIndia.Employee.Employee;
+import com.BankOfIndia.Main.MainRun;
 import com.BankOfIndia.DBConnection.*;
 public class Customer {
    	static long accountNo;
+   	private static final Logger log=Logger.getLogger(Customer.class);
 	/*
 	 * public static void main(String[] args) { //applicationForm();
 	 * loginCustomer(); }
 	 */
-	public static void loginCustomer() {
+	public static void loginCustomer() throws IOException {
 		Scanner sc= new Scanner(System.in);
 		System.out.println("enter user name");
 		String name=sc.nextLine();
@@ -36,6 +43,7 @@ public class Customer {
 			System.out.println("   4. depositing money");
 			System.out.println("   5. transfereing money");
 			System.out.println("   6. receiving money");
+			System.out.println("   7. exit");
 			 n=sc.nextInt();
 			 
 			switch(n) {
@@ -45,9 +53,10 @@ public class Customer {
 			case 4:depositMoney();break;
 			case 5:transferMoney();break;
 			case 6:receiveMoney();break;
+			case 7:MainRun.exit();
 			default :System.out.println("invalid option");
 			}
-			  }while(n<0||n>6||n>0&&n<7);
+			  }while(n<0||n>7||n>0&&n<8);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -71,7 +80,9 @@ public class Customer {
 			pstmt.setLong(2, accountNo);
 			int status=pstmt.executeUpdate();
 			if(status !=0)
-				System.out.println("money received sucessfully");
+				{System.out.println("money received sucessfully");
+				log.info("customer money recivied sucessfully");
+				}
 			else
 				System.out.println("failed to receive money ");
 		} catch (SQLException e) {
@@ -89,6 +100,7 @@ public class Customer {
 		if(b==true) 
 		{	
 			System.out.println("Money transfered sucessfully");
+			log.info("customer money transfered sucessfully");
 			long bal=SystemCheck.mainValidate(accountNo,transfer);
 			bal=bal-transfer;
 			try {
@@ -115,6 +127,7 @@ public class Customer {
 		boolean b= SystemCheck.depositValidate(accountNo,deposit);
 		if(b==true) {
 			System.out.println("Money deposited");
+			log.info("customer money deposited sucessfully");
 			try {
 				long bal=SystemCheck.mainValidate(accountNo,deposit);
 				bal=bal+deposit;
@@ -139,6 +152,7 @@ public class Customer {
 		boolean b=SystemCheck.withDrawValidate(accountNo,money);
 		if(b) {
 			System.out.println("take the cash");
+			log.info("customer money withdraw sucessfully");
 			try {
 				long bal=SystemCheck.mainValidate(accountNo,money);
 				bal=bal-money;

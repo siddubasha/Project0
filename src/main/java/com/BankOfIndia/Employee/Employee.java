@@ -1,5 +1,9 @@
 package com.BankOfIndia.Employee;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,7 +20,7 @@ public class Employee {
 	 * checkCustomerBalance(); employeeLogin(); }
 	 */
 	 
-	public static void employeeLogin() {
+	public static void employeeLogin() throws IOException {
 		Scanner sc= new Scanner(System.in);
 		System.out.println("enter name");
 		String name=sc.nextLine();
@@ -24,7 +28,7 @@ public class Employee {
 		String password=sc.next();
 		validate(name,password);
 		}
-	public static void validate(String name, String password){
+	public static void validate(String name, String password) throws IOException{
 		Scanner sc= new Scanner(System.in);
 		try {
 			PreparedStatement  pstmt=(DBConnectionSingleton.getInstance()).prepareStatement("select  name,password from employee");
@@ -44,13 +48,15 @@ public class Employee {
 	    System.out.println();
 		System.out.println("1.check customer balance");
 		System.out.println("2.verfiy applicants");
+		System.out.println("3.customer log details");
 		n=sc.nextInt();
 		switch(n) {
 		case 1:checkCustomerBalance();break;
 		case 2:approveAccounts();break;
+		case 3:customerLogDetails();break;
 		default:System.out.println("invalid option try again");
 		}
-		}while(n<0||n>2||n>0&&n<3);
+		}while(n<0||n>3||n>0&&n<4);
 	}
 	public static void checkCustomerBalance() {
 		Scanner sc= new Scanner(System.in);
@@ -92,6 +98,16 @@ public class Employee {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	public static void customerLogDetails() throws IOException {
+		FileReader fr= new FileReader("E:\\customer.txt");
+		BufferedReader br= new BufferedReader(fr);
+		String data="";
+		while((data=br.readLine())!=null) {
+			System.out.println(data);
+		}
+		br.close();
+		fr.close();
 	}
 
 	
